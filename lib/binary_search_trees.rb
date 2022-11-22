@@ -35,6 +35,14 @@ class Tree
     pre_order(node.right)
   end
 
+  def in_order(node = @root)
+    return if node.nil?
+
+    in_order(node.left)
+    puts node.data
+    in_order(node.right)
+  end
+
   def find(key, root = @root)
     return if root.nil?
 
@@ -59,15 +67,53 @@ class Tree
 
     root
   end
+
+  def min_value_node(node)
+    current = node
+
+    current = current.left until current.left.nil?
+
+    current
+  end
+
+  def delete(key, root = @root)
+    return root if root.nil?
+
+    if key > root.data
+      root.right = delete(key, root.right)
+    elsif key < root.data
+      root.left = delete(key, root.left)
+    else
+      # node with one child only or no child
+      if root.left.nil?
+        temp = root.right
+        root = nil
+        return temp
+      elsif root.right.nil?
+        temp = root.left
+        root = nil
+        return temp
+      end
+      # node with two children
+      # find inorder succesor and make it root
+      # then delete the inorder successor
+      temp = min_value_node(root.right)
+      puts temp
+      root.data = temp.data
+      root.right = delete(temp.data, root.right)
+    end
+    root
+  end
 end
 
-array = [2, 3, 4]
+array = [1, 2, 3, 4, 5, 6, 7]
 
 new_tree = Tree.new(array)
 
 new_tree.build_tree(array)
-new_tree.insert(5)
-new_tree.insert(1)
-new_tree.insert(0)
+
+new_tree.in_order
+puts '...........'
+new_tree.delete(4)
+
 new_tree.pre_order
-# puts new_tree.find(67)
