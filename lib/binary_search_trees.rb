@@ -36,10 +36,9 @@ class Tree
   end
 
   def find(key, root = @root)
-    if root.nil? || (root.data = key)
-      puts "The key #{root.data} exists in node #{root}"
-      return
-    end
+    return if root.nil?
+
+    puts "The key #{root.data} exists in node #{root}" if root.data == key
     if root.data < key
       find(key, root.right)
     elsif root.data > key
@@ -53,4 +52,4 @@ array = [1, 2, 3, 4, 5, 6, 7, 8]
 new_tree = Tree.new(array)
 new_tree.build_tree(array)
 new_tree.pre_order
-puts new_tree.find(6)
+puts new_tree.find(67)
