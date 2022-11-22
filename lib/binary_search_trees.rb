@@ -45,11 +45,29 @@ class Tree
       find(key, root.left)
     end
   end
+
+  def insert(key, root = @root)
+    if root.nil?
+      root = Node.new(key)
+      return root
+    end
+    return if key == root.data
+
+    root.right = insert(key, root.right) if key > root.data
+
+    root.left = insert(key, root.left) if key < root.data
+
+    root
+  end
 end
 
-array = [1, 2, 3, 4, 5, 6, 7, 8]
+array = [2, 3, 4]
 
 new_tree = Tree.new(array)
+
 new_tree.build_tree(array)
+new_tree.insert(5)
+new_tree.insert(1)
+new_tree.insert(0)
 new_tree.pre_order
-puts new_tree.find(67)
+# puts new_tree.find(67)
