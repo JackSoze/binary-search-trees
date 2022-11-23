@@ -10,11 +10,12 @@ end
 
 # this builds instances of trees
 class Tree
-  attr_accessor :root
+  attr_accessor :root, :arr
 
   def initialize(array)
     @array = array
     @root = build_tree(array)
+    @arr = []
   end
 
   def build_tree(array)
@@ -30,17 +31,58 @@ class Tree
   def pre_order(node = @root)
     return if node.nil?
 
-    puts node.data
-    pre_order(node.left)
-    pre_order(node.right)
+    if block_given?
+      yield node
+      pre_order(node.left) { |node| puts node.data }
+      pre_order(node.right) { |node| puts node.data }
+    else
+      @arr << node.data
+      pre_order(node.left)
+      pre_order(node.right)
+    end
+    if !block_given? && node == @root
+      puts 'running'
+      puts arr
+      self.arr = []
+    end
   end
 
   def in_order(node = @root)
     return if node.nil?
 
-    in_order(node.left)
-    puts node.data
-    in_order(node.right)
+    if block_given?
+      in_order(node.left) { |node| puts node.data }
+      yield node
+      in_order(node.right) { |node| puts node.data }
+    else
+      in_order(node.left)
+      arr << node.data
+      in_order(node.right)
+    end
+    if !block_given? && node == @root
+      puts 'running'
+      puts arr
+      self.arr = []
+    end
+  end
+
+  def post_order(node = @root)
+    return if node.nil?
+
+    if block_given?
+      post_order(node.right) { |node| puts node.data }
+      post_order(node.left) { |node| puts node.data }
+      yield node
+    else
+      post_order(node.right)
+      post_order(node.left)
+      arr << node.data
+    end
+    if !block_given? && node == @root
+      puts 'running'
+      puts arr
+      self.arr = []
+    end
   end
 
   def find(key, root = @root)
@@ -131,6 +173,4 @@ new_tree = Tree.new(array)
 
 new_tree.build_tree(array)
 
-new_tree.pre_order
-puts '........................'
-new_tree.level_order
+new_tree.post_order { |node| puts node.data }
