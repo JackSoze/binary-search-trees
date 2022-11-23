@@ -98,11 +98,30 @@ class Tree
       # find inorder succesor and make it root
       # then delete the inorder successor
       temp = min_value_node(root.right)
-      puts temp
       root.data = temp.data
       root.right = delete(temp.data, root.right)
     end
     root
+  end
+
+  def level_order(root = @root)
+    return if root.nil?
+
+    arr = []
+    queue = []
+    queue.push(root)
+    until queue.empty?
+      current = queue[0]
+      if block_given?
+        yield current
+      else
+        arr << current.data
+      end
+      queue.push(current.left) unless current.left.nil?
+      queue.push(current.right) unless current.right.nil?
+      queue.shift
+    end
+    puts arr unless block_given?
   end
 end
 
@@ -112,8 +131,6 @@ new_tree = Tree.new(array)
 
 new_tree.build_tree(array)
 
-new_tree.in_order
-puts '...........'
-new_tree.delete(4)
-
 new_tree.pre_order
+puts '........................'
+new_tree.level_order
