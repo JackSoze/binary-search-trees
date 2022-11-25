@@ -85,14 +85,15 @@ class Tree
     end
   end
 
-  def find(key, root = @root)
-    return if root.nil?
+  def find(key, node = @root)
+    puts "The key #{node.data} exists in node #{node}" if node.data == key
+    return node if node.nil? || node.data == key
 
-    puts "The key #{root.data} exists in node #{root}" if root.data == key
-    if root.data < key
-      find(key, root.right)
-    elsif root.data > key
-      find(key, root.left)
+    puts @root.data
+    if node.data < key
+      find(key, node.right)
+    elsif node.data > key
+      find(key, node.left)
     end
   end
 
@@ -149,7 +150,7 @@ class Tree
   def level_order(root = @root)
     return if root.nil?
 
-    arr = []
+    level_order_array = []
     queue = []
     queue.push(root)
     until queue.empty?
@@ -157,13 +158,32 @@ class Tree
       if block_given?
         yield current
       else
-        arr << current.data
+        level_order_array << current.data
       end
       queue.push(current.left) unless current.left.nil?
       queue.push(current.right) unless current.right.nil?
       queue.shift
     end
-    puts arr unless block_given?
+    puts level_order_array unless block_given?
+  end
+
+  # doesnt take arguments and when used outside class...
+  # ...it gives the total depth only
+  def node_depth(root = @root)
+    if root.nil?
+      0
+    else
+      nleft = node_depth(root.left)
+      nright = node_depth(root.right)
+      lambda = -> { nleft > nright ? (nleft + 1) : (nright + 1) }
+      lambda.call
+    end
+  end
+
+  def height(key)
+    found_node = self.find(key)
+    node_height = node_depth(found_node)
+    puts "the node (#{found_node.data}:#{found_node}) found and its height is #{node_height}"
   end
 end
 
@@ -173,4 +193,4 @@ new_tree = Tree.new(array)
 
 new_tree.build_tree(array)
 
-new_tree.post_order { |node| puts node.data }
+new_tree.height(4)
