@@ -169,12 +169,12 @@ class Tree
 
   # doesnt take arguments and when used outside class...
   # ...it gives the total depth only
-  def node_depth(root = @root)
+  def node_height(root = @root)
     if root.nil?
       0
     else
-      nleft = node_depth(root.left)
-      nright = node_depth(root.right)
+      nleft = node_height(root.left)
+      nright = node_height(root.right)
       lambda = -> { nleft > nright ? (nleft + 1) : (nright + 1) }
       lambda.call
     end
@@ -182,8 +182,8 @@ class Tree
 
   def height(key)
     found_node = self.find(key)
-    node_height = node_depth(found_node)
-    puts "the node (#{found_node.data}:#{found_node}) found and its height is #{node_height}"
+    this_node_height = node_height(found_node)
+    puts "the node (#{found_node.data}:#{found_node}) found and its height is #{this_node_height}"
   end
 end
 
