@@ -182,18 +182,38 @@ class Tree
     return -1 if root.nil?
 
     dist = -1
-    if ((root.data == key) ||
-      (dist = find_depth(root.left, key)) >= 0||
-      (dist = find_depth(root.right, key)) >= 0)
+    if (root.data == key) ||
+       (dist = find_depth(root.left, key)) >= 0 ||
+       (dist = find_depth(root.right, key)) >= 0
       return dist + 1
     end
-    return dist
+
+    dist
+  end
+
+  def pretty_print(node = @root, prefix = '', is_left = true)
+    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
+    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
+    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
+  end
+
+  def balanced?(root = @root)
+    return true if root.nil?
+
+    lh = node_height(root.left)
+
+    rh = node_height(root.right)
+
+    return true if ((lh - rh).abs <= 1) && balanced?(root.left) == true && balanced?(root.right) == true
+
+    false
   end
 
   def height(key)
     found_node = find(key)
     this_node_height = node_height(found_node)
     puts "the node (#{found_node.data}:#{found_node}) found and its height is #{this_node_height}"
+    this_node_height
   end
 end
 
@@ -203,4 +223,6 @@ new_tree = Tree.new(array)
 
 new_tree.build_tree(array)
 
-puts new_tree.find_depth(4)
+new_tree.balanced?
+
+new_tree.pretty_print
