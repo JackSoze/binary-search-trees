@@ -230,26 +230,28 @@ fixed_array = array.sort.uniq!
 new_tree = Tree.new(fixed_array)
 
 new_tree.pretty_print
-
+sleep 2
 puts "The array is balanced: #{new_tree.balanced?}"
-
+sleep 2
 puts "Level-order traversal: #{new_tree.level_order}"
 puts "Pre-order traversal: #{new_tree.pre_order}"
 puts "In-order traversal: #{new_tree.in_order}"
 puts "Post-order traversal: #{new_tree.post_order}"
-
+sleep 2
 new_tree.insert(102)
 new_tree.insert(133)
 new_tree.insert(145)
 new_tree.insert(178)
 new_tree.insert(185)
 new_tree.pretty_print
-
+sleep 2
 puts "The BST is balanced: #{new_tree.balanced?}"
+puts "Balancing the bst..."
+sleep 2
 new_tree.rebalance
 new_tree.pretty_print
 puts "The BST is balanced: #{new_tree.balanced?}"
-
+sleep 2
 puts "Level-order traversal: #{new_tree.level_order}"
 puts "Pre-order traversal: #{new_tree.pre_order}"
 puts "In-order traversal: #{new_tree.in_order}"
