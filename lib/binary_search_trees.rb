@@ -138,8 +138,6 @@ class Tree
         return temp
       end
       # node with two children
-      # find inorder succesor and make it root
-      # then delete the inorder successor
       temp = min_value_node(root.right)
       root.data = temp.data
       root.right = delete(temp.data, root.right)
@@ -180,8 +178,20 @@ class Tree
     end
   end
 
+  def find_depth(root = @root, key)
+    return -1 if root.nil?
+
+    dist = -1
+    if ((root.data == key) ||
+      (dist = find_depth(root.left, key)) >= 0||
+      (dist = find_depth(root.right, key)) >= 0)
+      return dist + 1
+    end
+    return dist
+  end
+
   def height(key)
-    found_node = self.find(key)
+    found_node = find(key)
     this_node_height = node_height(found_node)
     puts "the node (#{found_node.data}:#{found_node}) found and its height is #{this_node_height}"
   end
@@ -193,4 +203,4 @@ new_tree = Tree.new(array)
 
 new_tree.build_tree(array)
 
-new_tree.height(4)
+puts new_tree.find_depth(4)
