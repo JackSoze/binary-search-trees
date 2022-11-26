@@ -15,10 +15,10 @@ end
 
 # this builds instances of trees
 class Tree
-  attr_accessor :root, :arr
+  attr_accessor :root, :arr, :array
 
   def initialize(array)
-    @array = array.sort.uniq
+    @array = array
     @root = build_tree(array)
     @arr = []
   end
@@ -37,7 +37,7 @@ class Tree
     # creating new_array to return an array while resetting @arr = []
     new_arr = arr
     self.arr = []
-    p new_arr
+
     new_arr
   end
 
@@ -163,11 +163,10 @@ class Tree
       queue.push(current.right) unless current.right.nil?
       queue.shift
     end
-    puts level_order_array unless block_given?
+    return level_order_array unless block_given?
   end
 
-  # doesnt take arguments and when used outside class...
-  # ...it gives the total depth only
+  # doesn't take keys
   def node_height(root = @root)
     if root.nil?
       0
@@ -177,6 +176,14 @@ class Tree
       lambda = -> { nleft > nright ? (nleft + 1) : (nright + 1) }
       lambda.call
     end
+  end
+
+  # takes keys and uses node_height as helper
+  def height(key)
+    found_node = find(key)
+    this_node_height = node_height(found_node)
+    puts "the node (#{found_node.data}:#{found_node}) found and its height is #{this_node_height}"
+    this_node_height
   end
 
   def find_depth(root = @root, key)
@@ -205,20 +212,9 @@ class Tree
 
     rh = node_height(root.right)
 
-    if ((lh - rh).abs <= 1) && balanced?(root.left) == true && balanced?(root.right) == true
-      puts true
-      return true
-    end
+    return true if ((lh - rh).abs <= 1) && balanced?(root.left) == true && balanced?(root.right) == true
 
-    puts false
     false
-  end
-
-  def height(key)
-    found_node = find(key)
-    this_node_height = node_height(found_node)
-    puts "the node (#{found_node.data}:#{found_node}) found and its height is #{this_node_height}"
-    this_node_height
   end
 
   def rebalance
@@ -227,10 +223,34 @@ class Tree
   end
 end
 
-array = [1, 2, 3, 4, 5, 6, 7]
+array = (Array.new(15) { rand(1..100) })
 
-new_tree = Tree.new(array)
+fixed_array = array.sort.uniq!
+
+new_tree = Tree.new(fixed_array)
 
 new_tree.pretty_print
 
-new_tree.post_order
+puts "The array is balanced: #{new_tree.balanced?}"
+
+puts "Level-order traversal: #{new_tree.level_order}"
+puts "Pre-order traversal: #{new_tree.pre_order}"
+puts "In-order traversal: #{new_tree.in_order}"
+puts "Post-order traversal: #{new_tree.post_order}"
+
+new_tree.insert(102)
+new_tree.insert(133)
+new_tree.insert(145)
+new_tree.insert(178)
+new_tree.insert(185)
+new_tree.pretty_print
+
+puts "The BST is balanced: #{new_tree.balanced?}"
+new_tree.rebalance
+new_tree.pretty_print
+puts "The BST is balanced: #{new_tree.balanced?}"
+
+puts "Level-order traversal: #{new_tree.level_order}"
+puts "Pre-order traversal: #{new_tree.pre_order}"
+puts "In-order traversal: #{new_tree.in_order}"
+puts "Post-order traversal: #{new_tree.post_order}"
