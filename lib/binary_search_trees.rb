@@ -1,10 +1,15 @@
 # this builds the induvidual nodes
 class Node
+  include Comparable
   attr_accessor :data, :right, :left
 
   def initialize(data)
     @data = data
     @left = @right = nil
+  end
+
+  def <=>(other_node)
+    data <=> other_node.data
   end
 end
 
@@ -12,8 +17,9 @@ end
 class Tree
   attr_accessor :root, :arr
 
+
   def initialize(array)
-    @array = array
+    @array = array.sort.uniq
     @root = build_tree(array)
     @arr = []
   end
@@ -48,6 +54,7 @@ class Tree
   end
 
   def in_order(node = @root)
+
     return if node.nil?
 
     if block_given?
@@ -60,10 +67,12 @@ class Tree
       in_order(node.right)
     end
     if !block_given? && node == @root
-      puts 'running'
-      puts arr
+      # creating new_array to return an array while resetting @arr = []
+      new_arr = arr
       self.arr = []
+      return new_arr
     end
+
   end
 
   def post_order(node = @root)
@@ -204,8 +213,12 @@ class Tree
 
     rh = node_height(root.right)
 
-    return true if ((lh - rh).abs <= 1) && balanced?(root.left) == true && balanced?(root.right) == true
+    if ((lh - rh).abs <= 1) && balanced?(root.left) == true && balanced?(root.right) == true
+      puts true
+      return true
+    end
 
+    puts false
     false
   end
 
@@ -215,14 +228,29 @@ class Tree
     puts "the node (#{found_node.data}:#{found_node}) found and its height is #{this_node_height}"
     this_node_height
   end
+
+  def rebalance
+    sorted_arr = self.in_order
+    self.root = build_tree(sorted_arr)
+  end
 end
 
 array = [1, 2, 3, 4, 5, 6, 7]
 
 new_tree = Tree.new(array)
 
-new_tree.build_tree(array)
+new_tree.pretty_print
+
+new_tree.insert(11)
+
+new_tree.insert(44)
 
 new_tree.balanced?
 
 new_tree.pretty_print
+new_tree.rebalance
+new_tree.balanced?
+new_tree.pretty_print
+new_tree.root
+
+
