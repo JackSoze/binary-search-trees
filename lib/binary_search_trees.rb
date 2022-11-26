@@ -8,15 +8,14 @@ class Node
     @left = @right = nil
   end
 
-  def <=>(other_node)
-    data <=> other_node.data
+  def <=>(other)
+    data <=> other.data
   end
 end
 
 # this builds instances of trees
 class Tree
   attr_accessor :root, :arr
-
 
   def initialize(array)
     @array = array.sort.uniq
@@ -34,6 +33,14 @@ class Tree
     node
   end
 
+  def return_new_arr
+    # creating new_array to return an array while resetting @arr = []
+    new_arr = arr
+    self.arr = []
+    p new_arr
+    new_arr
+  end
+
   def pre_order(node = @root)
     return if node.nil?
 
@@ -46,15 +53,10 @@ class Tree
       pre_order(node.left)
       pre_order(node.right)
     end
-    if !block_given? && node == @root
-      puts 'running'
-      puts arr
-      self.arr = []
-    end
+    return_new_arr if !block_given? && node == @root
   end
 
   def in_order(node = @root)
-
     return if node.nil?
 
     if block_given?
@@ -66,13 +68,7 @@ class Tree
       arr << node.data
       in_order(node.right)
     end
-    if !block_given? && node == @root
-      # creating new_array to return an array while resetting @arr = []
-      new_arr = arr
-      self.arr = []
-      return new_arr
-    end
-
+    return_new_arr if !block_given? && node == @root # return_new_arr here if missbehave
   end
 
   def post_order(node = @root)
@@ -87,11 +83,7 @@ class Tree
       post_order(node.left)
       arr << node.data
     end
-    if !block_given? && node == @root
-      puts 'running'
-      puts arr
-      self.arr = []
-    end
+    return_new_arr if !block_given? && node == @root
   end
 
   def find(key, node = @root)
@@ -241,16 +233,4 @@ new_tree = Tree.new(array)
 
 new_tree.pretty_print
 
-new_tree.insert(11)
-
-new_tree.insert(44)
-
-new_tree.balanced?
-
-new_tree.pretty_print
-new_tree.rebalance
-new_tree.balanced?
-new_tree.pretty_print
-new_tree.root
-
-
+new_tree.post_order
